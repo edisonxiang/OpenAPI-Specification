@@ -1,11 +1,11 @@
-openapi: "3.0.0"
+openapi: 3.0.0
 info:
   version: 1.0.0
   title: Swagger Petstore
   license:
     name: MIT
 servers:
-  - url: http://petstore.swagger.io/v1
+  - url: 'http://petstore.swagger.io/v1'
 paths:
   /pets:
     get:
@@ -30,15 +30,15 @@ paths:
               schema:
                 type: string
           content:
-            application/json:    
+            application/json:
               schema:
-                $ref: "#/components/schemas/Pets"
+                $ref: '#/components/schemas/Pets'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
     post:
       summary: Create a pet
       operationId: createPets
@@ -52,8 +52,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
-  /pets/{petId}:
+                $ref: '#/components/schemas/Error'
+  '/pets/{petId}':
     get:
       summary: Info for a specific pet
       operationId: showPetById
@@ -72,13 +72,47 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Pets"
+                $ref: '#/components/schemas/Pets'
         default:
           description: unexpected error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: '#/components/schemas/Error'
+  '/pets/{petId}/action':
+    post:
+      summary: action for a specific pet
+      operationId: actionPetById
+      tags:
+        - pets
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              anyOf:
+                - $ref: '#/components/schemas/ActionRequest1'
+                - $ref: '#/components/schemas/ActionRequest2'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/ActionResponse1'
+                  - $ref: '#/components/schemas/ActionResponse2'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     Pet:
@@ -93,10 +127,32 @@ components:
           type: string
         tag:
           type: string
+    ActionRequest1:
+      properties:
+        name:
+          type: string
+    ActionRequest2:
+      properties:
+        tag:
+          type: string
+    ActionResponse1:
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    ActionResponse2:
+      properties:
+        id:
+          type: integer
+          format: int64
+        tag:
+          type: string
     Pets:
       type: array
       items:
-        $ref: "#/components/schemas/Pet"
+        $ref: '#/components/schemas/Pet'
     Error:
       required:
         - code
